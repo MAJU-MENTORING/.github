@@ -1,5 +1,21 @@
 # 🤝 MAJU
 
+<div align="center">
+  <h1>MAJU - 맞춤형 멘토링 매칭 서비스</h1>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="./assets/introduce.png" alt="Main" style="border-radius: 10px;"/>
+</div>
+
+<br/>
+
+<div align="center">
+  <a href="http://13.125.96.234/login">홈페이지</a>
+</div>
+
 <br/>
 
 ## 🪢 프로젝트 소개
