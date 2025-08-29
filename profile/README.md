@@ -88,6 +88,69 @@
 
 ## 🔧 Troubleshooting
 
+### 🧑🏻‍💻 프론트엔드
+
+<details>
+<summary>🛠 Axios 요청 시 JWT 토큰 갱신 문제</summary>
+
+  <br/>
+
+**Problem**
+- 로그인 후 API 요청 시 JWT 토큰이 헤더에 제대로 포함되지 않아 인증 실패가 발생하는 문제
+
+**Reason**
+- Axios 인스턴스 생성 시점에 토큰을 설정하면, 이후 토큰이 갱신되어도 기존에 설정된 토큰이 계속 사용됨
+
+**To Solve**
+
+**Before: 인스턴스 생성 시 토큰 고정**
+```javascript
+import axios from 'axios';
+
+const requestAxios = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+        // ❌ 생성 시점의 토큰으로 고정됨
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+});
+```
+
+**After: 요청 시마다 최신 토큰 동적 추가**
+```javascript
+import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+
+const requestAxios = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// 🆕 요청할 때마다 최신 토큰을 헤더에 추가
+requestAxios.interceptors.request.use(
+    (config) => {
+        const token = useAuthStore.getState().accessToken;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+export default requestAxios;
+```
+
+**개선 효과**
+- 토큰 갱신 시 자동으로 최신 토큰 사용
+- 로그인/로그아웃 상태 변경에 즉시 대응
+- 인증 관련 에러 감소
+
+</details>
+
 ### 🧑🏻‍💻 백엔드
 
 <details>
